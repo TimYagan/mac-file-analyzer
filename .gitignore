@@ -1,0 +1,39 @@
+# Rust
+target/
+
+# Binary (macOS Rust binaries have no extension; guard against accidental commit)
+mfa
+
+# Release archives
+dist/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Build artifacts
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Benchmark results
+criterion/
+
+# Test coverage
+*.profraw
+*.profdata

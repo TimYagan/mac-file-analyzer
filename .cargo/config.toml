@@ -1,0 +1,14 @@
+# Set the macOS deployment target per architecture so the linker enforces the
+# minimum OS version and avoids linking symbols that are unavailable on older
+# systems.
+#
+# x86_64 (Intel): macOS 10.12 Sierra — oldest Intel release supported by
+#                 Rust 1.70+ (the project's minimum toolchain).
+# aarch64 (Apple Silicon): macOS 11.0 Big Sur — the first macOS for M1;
+#                          also the minimum for the aarch64-apple-darwin target.
+
+[target.x86_64-apple-darwin]
+rustflags = ["-C", "link-arg=-mmacosx-version-min=10.12"]
+
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-mmacosx-version-min=11.0"]
