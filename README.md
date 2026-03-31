@@ -21,6 +21,7 @@ A fast, accurate command-line tool for analysing disk usage on macOS.
 | Rust toolchain | 1.70 |
 
 ## Installation
+Homebrew installation currently builds from source and may install Rust build dependencies if they are not already present
 
 ### From source
 

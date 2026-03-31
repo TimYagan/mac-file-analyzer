@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [0.1.3] - 2026-04-01
+
+### Fixed
+- Bump version to 0.1.3
+- Fix a minor typo in the README
+
+[0.1.3]: https://github.com/TimYagan/mac-file-analyzer/releases/tag/v0.1.3 
+
+
+## [0.1.2] - 2026-04-01
+
+### Fixed
+- Bump version to 0.1.2
+
+[0.1.2]: https://github.com/TimYagan/mac-file-analyzer/releases/tag/v0.1.2 
 
 ## [0.1.1] - 2026-03-31
 
