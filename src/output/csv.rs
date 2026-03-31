@@ -2,6 +2,26 @@
 use crate::aggregator::{DirNode, SortOrder};
 use crate::formatter::human_size;
 
+/// Escape a path string for safe inclusion in a CSV field.
+///
+/// - Doubles embedded double-quote characters (RFC 4180).
+/// - Replaces literal newlines (macOS filenames may contain them).
+/// - Prepends a tab to values starting with `=`, `+`, `-`, or `@` to prevent
+///   spreadsheet formula injection when the CSV is opened in Excel / Sheets.
+fn csv_escape_path(raw: &str) -> String {
+    let escaped = raw
+        .replace('"', "\"\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r");
+    // Formula-injection guard: a leading tab is invisible in most spreadsheets
+    // and prevents `=CMD()`, `+CMD()`, `-CMD()`, `@CMD()` from being evaluated.
+    if escaped.starts_with(['=', '+', '-', '@']) {
+        format!("\t{}", escaped)
+    } else {
+        escaped
+    }
+}
+
 /// Render a CSV table with columns `path,bytes,human_size`.
 pub fn render_csv(
     node: &DirNode,
@@ -13,11 +33,7 @@ pub fn render_csv(
     let limit = top_n.unwrap_or(entries.len());
     let mut out = String::from("path,bytes,human_size\n");
     for (path, size) in entries.iter().take(limit) {
-        // Escape double-quotes (RFC 4180) and newlines (macOS allows \n in filenames).
-        let escaped = path.to_string_lossy()
-            .replace('"', "\"\"")
-            .replace('\n', "\\n")
-            .replace('\r', "\\r");
+        let escaped = csv_escape_path(&path.to_string_lossy());
         out.push('"');
         out.push_str(&escaped);
         out.push_str("\",");
@@ -43,11 +59,7 @@ pub fn render_csv_dirs(
     let limit = top_n.unwrap_or(entries.len());
     let mut out = String::from("path,bytes,human_size\n");
     for (path, size) in entries.iter().take(limit) {
-        // Escape double-quotes (RFC 4180) and newlines (macOS allows \n in filenames).
-        let escaped = path.to_string_lossy()
-            .replace('"', "\"\"")
-            .replace('\n', "\\n")
-            .replace('\r', "\\r");
+        let escaped = csv_escape_path(&path.to_string_lossy());
         out.push('"');
         out.push_str(&escaped);
         out.push_str("\",");
@@ -63,7 +75,7 @@ pub fn render_csv_dirs(
 pub fn render_csv_by_ext(node: &DirNode, sort: SortOrder) -> String {
     let mut out = String::from("extension,bytes,human_size,file_count\n");
     for (ext, bytes, count) in node.by_extension_sorted(sort) {
-        let escaped = ext.replace('"', "\"\"").replace('\n', "\\n").replace('\r', "\\r");
+        let escaped = csv_escape_path(&ext);
         out.push('"');
         out.push_str(&escaped);
         out.push_str("\",");

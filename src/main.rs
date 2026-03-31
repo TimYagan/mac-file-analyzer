@@ -275,6 +275,17 @@ fn truncate_path(path: &std::path::Path, max_chars: usize) -> String {
 /// Examples: `"500"`, `"10MB"`, `"1.5 GiB"`, `"2T"`.
 fn parse_min_size(s: &str) -> Result<u64, String> {
     let s = s.trim();
+    // Reject special float literals before the unit-split so the error message
+    // includes the actual value the user typed (e.g. 'nan') rather than ''.
+    {
+        let lower = s.to_lowercase();
+        if lower == "nan" || lower == "inf" || lower == "infinity"
+            || lower == "-inf" || lower == "-infinity"
+            || lower == "+inf" || lower == "+infinity"
+        {
+            return Err(format!("'{}' is not a valid number", s));
+        }
+    }
     // Find where the numeric part ends (first alphabetic char or space).
     let split = s
         .find(|c: char| c.is_alphabetic() || c == ' ')
@@ -285,6 +296,9 @@ fn parse_min_size(s: &str) -> Result<u64, String> {
     let num: f64 = num_str
         .parse()
         .map_err(|_| format!("'{}' is not a valid number", num_str))?;
+    if !num.is_finite() {
+        return Err(format!("'{}' is not a valid number", num_str));
+    }
     if num < 0.0 {
         return Err("size must be non-negative".to_string());
     }
@@ -348,6 +362,10 @@ mod tests {
         assert!(parse_min_size("abc").is_err());
         assert!(parse_min_size("10QQ").is_err());
         assert!(parse_min_size("-1MB").is_err());
+        // NaN and infinity must be rejected, not silently treated as 0 or pass the overflow check.
+        assert!(parse_min_size("nan").is_err());
+        assert!(parse_min_size("inf").is_err());
+        assert!(parse_min_size("-inf").is_err());
     }
 
     // ── truncate_path tests ──────────────────────────────────────────────────
