@@ -7,6 +7,19 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.1] - 2026-03-31
+
+### Fixed
+- Reject non-finite values such as `NaN` and `Infinity` in `--min-size`
+- Prevent CSV formula injection by prefixing dangerous paths with a tab in CSV output
+- Improve error messages for invalid `--min-size` values
+
+### Added
+- Add `run-tests.sh` for convenient local test execution
+- Complete functional validation of CLI feature behavior
+
+[0.1.1]: https://github.com/TimYagan/mac-file-analyzer/releases/tag/v0.1.1 
+
 ## [0.1.0] — 2026-03-31
 
 ### Added
