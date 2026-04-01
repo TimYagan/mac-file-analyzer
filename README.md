@@ -23,6 +23,14 @@ A fast, accurate command-line tool for analysing disk usage on macOS.
 ## Installation
 Homebrew installation currently builds from source and may install Rust build dependencies if they are not already present
 
+```bash
+brew install TimYagan/mfa/mfa
+```
+Verify the installation:
+
+```bash
+mfa --version
+```
 ### From source
 
 ```
