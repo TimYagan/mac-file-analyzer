@@ -1,17 +1,10 @@
+
+
 # mfa — mac file analyzer
 
 A fast, accurate command-line tool for analysing disk usage on macOS.
 
-## Features
-
-- **Three walkers** with increasing performance: single-threaded baseline → rayon parallel → `getattrlist` bulk syscall parallel
-- **Accurate sizes**: tracks actual disk blocks (`st_blocks × 512`) by default; `--apparent` for logical byte counts
-- **Correct hardlink handling**: every `(dev, ino)` pair is counted exactly once
-- **Sparse file awareness**: disk usage reflects real storage, not logical file length
-- **Resource fork support** (`--include-rsrc`): adds macOS resource fork bytes via `ATTR_FILE_RSRCLENGTH`
-- **Symlink safety**: skipped by default; `--follow-symlinks` follows with cycle detection
-- **Five output formats**: tree, flat list, by-extension breakdown, JSON, CSV
-- **Filtering**: by extension (`-t`), minimum size (`--min-size`), depth (`-d`), and top-N (`-n`)
+`mfa` is built for practical disk usage analysis on macOS, with filesystem-aware size reporting, flexible output modes, and support for cases like hardlinks and sparse files.
 
 ## Requirements
 
@@ -21,7 +14,7 @@ A fast, accurate command-line tool for analysing disk usage on macOS.
 | Rust toolchain | 1.70 |
 
 ## Installation
-Homebrew installation currently builds from source and may install Rust build dependencies if they are not already present
+Homebrew installation currently builds from source and may install Rust build dependencies if they are not already present.
 
 ```bash
 brew install TimYagan/mfa/mfa
@@ -31,6 +24,7 @@ Verify the installation:
 ```bash
 mfa --version
 ```
+
 ### From source
 
 ```
@@ -54,6 +48,43 @@ cargo build
 cargo build --release
 ./target/release/mfa [OPTIONS] [PATH]
 ```
+
+
+## Example Output
+
+ <p>
+  <img src="docs/images/mfa-flat-output.png" alt="mfa flat output" width="900">
+</p>
+
+## Why use mfa instead of du?
+
+`du` is a solid baseline, but `mfa` is built for a more practical disk usage workflow on macOS.
+
+It adds:
+
+- more useful output modes
+- built-in sorting and filtering
+- JSON and CSV export
+- filesystem-aware handling of hardlinks and sparse files
+- clearer summaries and statistics
+
+If you only need a quick total, `du` is often enough.
+If you want to inspect and act on the results more easily, `mfa` is the better fit.
+
+## Features
+
+- **Three walkers** with increasing performance: single-threaded baseline → rayon parallel → `getattrlist` bulk syscall parallel
+- **Accurate sizes**: tracks actual disk blocks (`st_blocks × 512`) by default; `--apparent` for logical byte counts
+- **Correct hardlink handling**: every `(dev, ino)` pair is counted exactly once
+- **Sparse file awareness**: disk usage reflects real storage, not logical file length
+- **Resource fork support** (`--include-rsrc`): adds macOS resource fork bytes via `ATTR_FILE_RSRCLENGTH`
+- **Symlink safety**: skipped by default; `--follow-symlinks` follows with cycle detection
+- **Five output formats**: tree, flat list, by-extension breakdown, JSON, CSV
+- **Filtering**: by extension (`-t`), minimum size (`--min-size`), depth (`-d`), and top-N (`-n`)
+- **Sorting**: by size (default) or name
+- **Progress spinner** with `--no-progress` to disable
+- **Total size and elapsed time** with `--stats`
+- **Quiet mode** to suppress non-critical warnings
 
 ## Usage
 
